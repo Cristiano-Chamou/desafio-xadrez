@@ -1,63 +1,27 @@
 #include <stdio.h>
-#include <stdbool.h>
 
-// Constantes para facilitar alterações e evitar repetição
-#define BISHOP_STEPS 5
-#define ROOK_STEPS   5
-#define QUEEN_STEPS  8
+typedef struct { int x, y; } Pos;
+typedef struct { int dx, dy; } Vec;
 
-// Função recursiva para mover o bispo na diagonal direita para cima
-void move_bishop(int step) {
-    if (step == 0) return;
-    printf("CimaDireita\n");
-    move_bishop(step - 1);
-}
-
-// Função recursiva para mover a torre para a direita
-void move_rook(int step) {
-    if (step == 0) return;
-    printf("Direita\n");
-    move_rook(step - 1);
-}
-
-// Função recursiva para mover a rainha para a esquerda
-void move_queen(int step) {
-    if (step == 0) return;
-    printf("Esquerda\n");
-    move_queen(step - 1);
-}
-
-// Movimentação do cavalo em L (para cima e para a direita),
-// usando loops com variáveis múltiplas, continue e break
-void move_knight_L() {
-    // Primeiro segmento: 2 vezes "Cima", usando for com múltiplas variáveis
-    for (int i = 0, j = 0; i < 2; i++, j++) {
-        if (j > i) {
-            // continue ilustrativo
-        }
-        printf("Cima\n");
+static void slide(Pos *p, Vec v, int steps, const char *label) {
+    for (int i = 0; i < steps; i++) {
+        p->x += v.dx; p->y += v.dy;
+        printf("%s -> (%d,%d)\n", label, p->x, p->y);
     }
-    // Segundo segmento: 1 vez "Direita", usando while com break
-    int k = 0;
-    while (k < 1) {
-        printf("Direita\n");
-        k++;
-        break;
-    }
+}
+
+static void knight(Pos *p, Vec v, const char *label) {
+    p->x += v.dx; p->y += v.dy;
+    printf("%s -> (%d,%d)\n", label, p->x, p->y);
 }
 
 int main() {
-    printf("---- Movimentação do Bispo (recursiva) ----\n");
-    move_bishop(BISHOP_STEPS);
+    Pos bishop = {4,4}, rook = {4,4}, queen = {4,4}, kn = {4,4};
 
-    printf("\n---- Movimentação da Torre (recursiva) ----\n");
-    move_rook(ROOK_STEPS);
+    slide(&bishop, (Vec){+1,+1}, 5, "Bispo NE");      // diagonal
+    slide(&rook,   (Vec){+1, 0}, 5, "Torre E");       // horizontal
+    slide(&queen,  (Vec){-1, 0}, 8, "Rainha W");      // horizontal
 
-    printf("\n---- Movimentação da Rainha (recursiva) ----\n");
-    move_queen(QUEEN_STEPS);
-
-    printf("\n---- Movimentação do Cavalo (loop aninhado, continue/break) ----\n");
-    move_knight_L();
-
+    knight(&kn, (Vec){+1,+2}, "Cavalo L");            // (dx,dy) do L
     return 0;
 }
